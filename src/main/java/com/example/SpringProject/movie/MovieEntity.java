@@ -1,22 +1,13 @@
 package com.example.SpringProject.movie;
 
+import jakarta.persistence.*;
+import lombok.Data;
 import java.time.LocalDate;
-import java.util.Set;
 
 import com.example.SpringProject.common.AppEnums;
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
-
+@Table(name = "movies")
 @Data
-@Table(name = "movie")
 @Entity
 public class MovieEntity {
 
@@ -25,17 +16,26 @@ public class MovieEntity {
     private Long id;
 
     private String name;
+
+    @Column(length = 2000)
     private String description;
+
+    private String genre;     // comma-separated genres
+    private String language;  // comma-separated languages
+
+    private String imageUrl;         // standard image
     private LocalDate releaseDate;
-    private String censorRating;
-    private Double averageRating;
-    private String imageUrl;
 
-    @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<AppEnums.GenreType> genres;
+    private AppEnums.CensorRating censorRating;
 
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
-    private Set<AppEnums.LanguageType> languages;
+    private int ratingSum;     // total of all ratings
+    private int ratingCount;   // number of users rated
+    private double averageRating;
+
+    public void addRating(int rating) {
+        this.ratingSum += rating;
+        this.ratingCount++;
+        this.averageRating = (double) ratingSum / ratingCount;
+    }
 }

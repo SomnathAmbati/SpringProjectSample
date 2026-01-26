@@ -1,5 +1,38 @@
 package com.example.SpringProject.payment;
 
-public class paymentEntity {
+import com.example.SpringProject.booking.Booking;
+import com.example.SpringProject.common.AppEnums.PaymentMode;
+import com.example.SpringProject.common.AppEnums.PaymentStatus;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+
+@Table(name = "payments")
+@Entity
+@Data
+public class PaymentEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(optional = false)
+    private Booking booking;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentMode mode; // CREDIT / DEBIT
+
+    private double finalAmount;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
 }
+

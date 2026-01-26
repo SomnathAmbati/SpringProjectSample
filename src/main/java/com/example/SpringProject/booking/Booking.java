@@ -1,7 +1,10 @@
-package com.example.SpringProject.seating;
+package com.example.SpringProject.booking;
+
+import java.time.LocalDateTime;
 
 import com.example.SpringProject.common.AppEnums;
-import com.example.SpringProject.theatre.ShowEntity;
+import com.example.SpringProject.show.Show;
+import com.example.SpringProject.user.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,27 +12,31 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
-@Data
-@Table(name = "seat_status_mapping")
+
 @Entity
-public class SeatStatusMapping {
+@Table(name = "bookings")
+@Data
+public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "show_id", nullable = false)
-    private ShowEntity show;
+    @ManyToOne(optional = false)
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "seat_id", nullable = false)
-    private SeatingEntity seat;
+    @ManyToOne(optional = false)
+    private Show show;
+
+    private String seatNumbers; // "A1,A2,B3"
+
+    private double totalPrice;
 
     @Enumerated(EnumType.STRING)
-    private AppEnums.SeatStatus status;
+    private AppEnums.BookingStatus status;
+
+    private LocalDateTime bookingTime;
 }

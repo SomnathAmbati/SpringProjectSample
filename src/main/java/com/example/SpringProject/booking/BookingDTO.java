@@ -1,5 +1,11 @@
 package com.example.SpringProject.booking;
 
-public class BookingDTO {
+import java.util.List;
 
+import lombok.Data;
+
+@Data
+public class BookingDTO {
+    private Long showId;
+    private List<Long> seatIds;
 }

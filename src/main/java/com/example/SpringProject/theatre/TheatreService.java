@@ -1,18 +1,18 @@
 package com.example.SpringProject.theatre;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TheatreService {
 
-    TheatreEntity createTheatre(TheatreDTO theatre);
+    TheatreDTO createTheatre(TheatreDTO theatreDTO);
 
-    ScreenEntity addScreen(Long theatreId, ScreenDTO screen);
+    List<TheatreDTO> getAllTheatres();
 
-    ShowEntity createShow(Long movieId, Long screenId, LocalDateTime showTime);
+    TheatreDTO getTheatreById(Long id);
 
-    List<ShowEntity> getShowsByMovie(Long movieId);
+    TheatreEntity create(TheatreDTO dto);
 
-    ShowEntity getShowById(Long showId);
+    TheatreEntity update(Long id, TheatreDTO dto);
 
+    void delete(Long id);
 }

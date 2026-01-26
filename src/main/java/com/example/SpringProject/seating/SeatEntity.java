@@ -1,41 +1,35 @@
 package com.example.SpringProject.seating;
 
 import com.example.SpringProject.common.AppEnums;
-import com.example.SpringProject.theatre.ShowEntity;
+import com.example.SpringProject.show.Show;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 
-@Entity
-@Table(
-    uniqueConstraints = @UniqueConstraint(
-        columnNames = {"show_id", "seat_type"}
-    )
-)
 @Data
-public class ShowSeatPriceEntity {
+@Table(name = "seats")
+@Entity
+public class SeatEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "show_id", nullable = false)
-    private ShowEntity show;
+    private String seatNumber; // A1, A2, B1...
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "seat_type", nullable = false)
-    private AppEnums.SeatType seatType;
+    private AppEnums.SeatType seatType; // PREMIUM / REGULAR
 
-    private Double price;
+    @Enumerated(EnumType.STRING)
+    private AppEnums.SeatStatus status; // AVAILABLE / BOOKED
+
+    @ManyToOne(optional = false)
+    private Show show;
 }

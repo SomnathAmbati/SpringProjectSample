@@ -14,7 +14,9 @@ public interface AppEnums {
 
     enum PaymentStatus { SUCCESS, FAILED }
 
-    enum GenreType { ACTION, COMEDY, DRAMA, HORROR, THRILLER }
+    // enum GenreType { ACTION, COMEDY, DRAMA, HORROR, THRILLER }
 
-    enum LanguageType { ENGLISH, HINDI, TELUGU, TAMIL }
+    // enum LanguageType { ENGLISH, HINDI, TELUGU, TAMIL }
+
+    enum CensorRating { U, UA, A, S } // U: Universal, UA: Parental guidance, A: Adult, S: Special
 }

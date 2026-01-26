@@ -1,68 +1,66 @@
 package com.example.SpringProject.theatre;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.SpringProject.movie.MovieEntity;
-import com.example.SpringProject.movie.MovieRepository;
-
-import lombok.RequiredArgsConstructor;
+import jakarta.transaction.Transactional;
 
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class TheatreServiceImpl implements TheatreService {
+    @Autowired
+    private TheatreRepository theatreRepository;
 
-    private final TheatreRepository theatreRepository;
-    private final ScreenRepository screenRepository;
-    private final ShowRepository showRepository;
-    private final MovieRepository movieRepository;
-
-    // -------- ADMIN METHODS --------
     private ModelMapper modelMapper = new ModelMapper();
+
     @Override
-    public TheatreEntity createTheatre(TheatreDTO theatre) {
-        return theatreRepository.save(modelMapper.map(theatre, TheatreEntity.class));
+    public TheatreDTO createTheatre(TheatreDTO dto) {
+        // Map DTO → Entity
+        TheatreEntity theatre = modelMapper.map(dto, TheatreEntity.class);
+
+        // Save entity
+        TheatreEntity saved = theatreRepository.save(theatre);
+
+        // Map Entity → DTO
+        return modelMapper.map(saved, TheatreDTO.class);
     }
 
     @Override
-    public ScreenEntity addScreen(Long theatreId, ScreenDTO screen) {
-        TheatreEntity theatre = theatreRepository.findById(theatreId)
+    public List<TheatreDTO> getAllTheatres() {
+        return theatreRepository.findAll()
+                .stream()
+                .map(theatre -> modelMapper.map(theatre, TheatreDTO.class))
+                .toList();
+    }
+
+    @Override
+    public TheatreDTO getTheatreById(Long id) {
+        TheatreEntity theatre = theatreRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Theatre not found"));
 
-        ScreenEntity se = modelMapper.map(screen, ScreenEntity.class);
-        se.setTheatre(theatre);
-        return screenRepository.save(se);
+        return modelMapper.map(theatre, TheatreDTO.class);
+    }
+
+    //Admin Methods
+    @Override
+    public TheatreEntity create(TheatreDTO dto) {
+        return theatreRepository.save(modelMapper.map(dto, TheatreEntity.class));
     }
 
     @Override
-    public ShowEntity createShow(Long movieId, Long screenId, LocalDateTime showTime) {
-        MovieEntity movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
-
-        ScreenEntity screen = screenRepository.findById(screenId)
-                .orElseThrow(() -> new RuntimeException("Screen not found"));
-
-        ShowEntity show = new ShowEntity();
-        show.setMovie(movie);
-        show.setScreen(screen);
-        show.setShowTime(showTime);
-
-        return showRepository.save(show);
-    }
-
-    // -------- USER METHODS --------
-
-    @Override
-    public List<ShowEntity> getShowsByMovie(Long movieId) {
-        return showRepository.findByMovieId(movieId);
+    public TheatreEntity update(Long id, TheatreDTO dto) {
+        TheatreEntity t = theatreRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Theatre not found"));
+        t.setName(dto.getName());
+        t.setLocation(dto.getLocation());
+        return theatreRepository.save(t);
     }
 
     @Override
-    public ShowEntity getShowById(Long showId) {
-        return showRepository.findById(showId)
-                .orElseThrow(() -> new RuntimeException("Show not found"));
+    public void delete(Long id) {
+        theatreRepository.deleteById(id);
     }
+
 }
