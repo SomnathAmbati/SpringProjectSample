@@ -1,5 +1,8 @@
 package com.example.SpringProject.payment;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,7 +10,10 @@ import org.springframework.stereotype.Service;
 import com.example.SpringProject.booking.Booking;
 import com.example.SpringProject.booking.BookingRepository;
 import com.example.SpringProject.common.AppEnums.BookingStatus;
+import com.example.SpringProject.common.AppEnums;
 import com.example.SpringProject.common.AppEnums.PaymentStatus;
+import com.example.SpringProject.seating.SeatEntity;
+import com.example.SpringProject.seating.SeatRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -17,37 +23,66 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+
     @Autowired
     private BookingRepository bookingRepository;
 
-    private ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private SeatRepository seatRepository;
+
+    private final ModelMapper modelMapper = new ModelMapper();
+
     @Override
     public PaymentResponseDTO processPayment(PaymentDTO dto) {
+
         // 1️⃣ Fetch booking
         Booking booking = bookingRepository.findById(dto.getBookingId())
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // 2️⃣ Create Payment entity
+        if (booking.getStatus() != BookingStatus.INITIATED) {
+            throw new RuntimeException("Invalid booking state");
+        }
+
+        // 2️⃣ Fetch seats
+        List<String> seatNumbers =
+                Arrays.asList(booking.getSeatNumbers().split(","));
+
+        List<SeatEntity> seats =
+                seatRepository.findByShowIdAndSeatNumberIn(
+                        booking.getShow().getId(), seatNumbers);
+
+        // 3️⃣ Validate again (race condition protection)
+        for (SeatEntity seat : seats) {
+            if (seat.getStatus() == AppEnums.SeatStatus.BOOKED) {
+                throw new RuntimeException("Seat already booked");
+            }
+        }
+
+        // 4️⃣ Mark seats as BOOKED
+        seats.forEach(seat ->
+                seat.setStatus(AppEnums.SeatStatus.BOOKED));
+
+        seatRepository.saveAll(seats);
+
+        // 5️⃣ Save payment
         PaymentEntity payment = new PaymentEntity();
         payment.setBooking(booking);
+        payment.setMode(dto.getMode());
         payment.setFinalAmount(booking.getTotalPrice());
         payment.setStatus(PaymentStatus.SUCCESS);
 
-        // 3️⃣ Save payment
         PaymentEntity savedPayment = paymentRepository.save(payment);
 
-        // 4️⃣ Update booking status
+        // 6️⃣ Confirm booking
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
 
-        // 5️⃣ Map entity → DTO using ModelMapper
-        PaymentResponseDTO response = modelMapper.map(savedPayment, PaymentResponseDTO.class);
+        // 7️⃣ Response
+        PaymentResponseDTO response =
+                modelMapper.map(savedPayment, PaymentResponseDTO.class);
 
-        // Optional: If PaymentResponseDTO fields don't exactly match, set them manually
-        // For example, if PaymentResponseDTO has amount instead of finalAmount:
         response.setAmount(savedPayment.getFinalAmount());
 
         return response;
     }
-
 }

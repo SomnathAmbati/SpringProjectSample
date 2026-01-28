@@ -23,7 +23,7 @@ public class AdminShowController {
     public Show create(@RequestParam Long movieId,
                        @RequestParam Long theatreId,
                        @RequestParam String showTime) {
-        return service.createShow(
+        return service.createShowWithId(
                 movieId,
                 theatreId,
                 LocalDateTime.parse(showTime));

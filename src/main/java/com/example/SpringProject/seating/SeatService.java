@@ -9,4 +9,5 @@ public interface SeatService {
     List<SeatDTO> getSeatChart(Long showId);
     double calculatePrice(List<Long> seatIds);
     // ShowDTO getShowFromSeat(Long showId);
+    List<SeatDTO> getSeatsByIds(List<Long> seatIds);
 }

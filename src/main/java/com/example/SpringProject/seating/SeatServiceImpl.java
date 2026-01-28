@@ -48,4 +48,19 @@ public class SeatServiceImpl implements SeatService {
                         seat.getSeatType() == AppEnums.SeatType.PREMIUM ? 250 : 180)
                 .sum();
     }
+    
+
+    @Override
+    public List<SeatDTO> getSeatsByIds(List<Long> seatIds) {
+
+        List<SeatEntity> seats = seatRepo.findByIdIn(seatIds);
+
+        if (seats.isEmpty()) {
+            throw new RuntimeException("Seats not found");
+        }
+
+        return seats.stream()
+                .map(seat -> modelMapper.map(seat, SeatDTO.class))
+                .toList();
+    }
 }

@@ -1,8 +1,7 @@
 package com.example.SpringProject.payment;
 
 import com.example.SpringProject.booking.Booking;
-import com.example.SpringProject.common.AppEnums.PaymentMode;
-import com.example.SpringProject.common.AppEnums.PaymentStatus;
+import com.example.SpringProject.common.AppEnums;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +14,8 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 
-@Table(name = "payments")
 @Entity
+@Table(name = "payments")
 @Data
 public class PaymentEntity {
 
@@ -28,11 +27,10 @@ public class PaymentEntity {
     private Booking booking;
 
     @Enumerated(EnumType.STRING)
-    private PaymentMode mode; // CREDIT / DEBIT
+    private AppEnums.PaymentMode mode;
 
     private double finalAmount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    private AppEnums.PaymentStatus status;
 }
-

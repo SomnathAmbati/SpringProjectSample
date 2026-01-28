@@ -6,8 +6,13 @@ import java.util.List;
 public interface ShowService {
     List<ShowDTO> getShowsByMovie(Long movieId);
 
-    Show createShow(Long movieId, Long theatreId, LocalDateTime time);
+    // Show createShow(Long movieId, Long theatreId, LocalDateTime time);
 
     void deleteShow(Long showId);
+
+    ShowDTO getShowById(Long showId);
+
+    Show createShowWithId(Long movieId, Long theatreId, LocalDateTime time);
+
 }
 

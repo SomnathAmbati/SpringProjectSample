@@ -1,16 +1,21 @@
 package com.example.SpringProject.show;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.SpringProject.common.AppEnums;
+import com.example.SpringProject.common.AppEnums.SeatType;
+import com.example.SpringProject.movie.MovieDTO;
 import com.example.SpringProject.movie.MovieRepository;
+import com.example.SpringProject.seating.SeatEntity;
+import com.example.SpringProject.seating.SeatRepository;
 import com.example.SpringProject.theatre.TheatreDTO;
 import com.example.SpringProject.theatre.TheatreRepository;
-
 
 @Service
 public class ShowServiceImpl implements ShowService {
@@ -20,6 +25,9 @@ public class ShowServiceImpl implements ShowService {
     private MovieRepository movieRepository;
     @Autowired
     private TheatreRepository theatreRepository;
+    @Autowired
+    private SeatRepository seatRepository;
+
 
     private ModelMapper modelMapper = new ModelMapper();
     @Override
@@ -29,7 +37,7 @@ public class ShowServiceImpl implements ShowService {
                 .map(show -> {
                     ShowDTO dto = new ShowDTO();
                     dto.setId(show.getId());
-                    dto.setMovieId(show.getMovie().getId());
+                    dto.setMovie(modelMapper.map(show.getMovie(), MovieDTO.class));
                     dto.setTheatre(modelMapper.map(show.getTheatre(), TheatreDTO.class));
                     dto.setShowTime(show.getShowTime());
                     return dto;
@@ -37,17 +45,70 @@ public class ShowServiceImpl implements ShowService {
     }
 
     @Override
-    public Show createShow(Long movieId, Long theatreId, LocalDateTime time) {
+    public ShowDTO getShowById(Long showId) {
+    		Show show = showRepository.findById(showId).orElseThrow(() -> new RuntimeException("Show not found: " + showId));
+    		ShowDTO dto = new ShowDTO();
+    		dto.setId(show.getId());
+        dto.setMovie(modelMapper.map(show.getMovie(), MovieDTO.class));
+        dto.setTheatre(modelMapper.map(show.getTheatre(), TheatreDTO.class));
+        dto.setShowTime(show.getShowTime());
+
+    	return dto;
+    }
+
+    
+    @Override
+    public Show createShowWithId(Long movieId, Long theatreId, LocalDateTime time) {
         Show show = new Show();
         show.setMovie(movieRepository.findById(movieId).orElseThrow());
         show.setTheatre(theatreRepository.findById(theatreId).orElseThrow());
         show.setShowTime(time);
-        return showRepository.save(show);
+        Show savedShow = showRepository.save(show);
+        generateSeatsForShow(savedShow);
+
+        return savedShow;
     }
+
+    private void generateSeatsForShow(Show show) {
+
+        List<SeatEntity> seats = new ArrayList<>();
+
+        final int TOTAL_ROWS = 10;     // A–J
+        final int TOTAL_COLS = 12;     // 1–12
+        final int PREMIUM_ROWS = 2;    // A, B
+
+        for (int row = 0; row < TOTAL_ROWS; row++) {
+
+            char rowChar = (char) ('A' + row);
+
+            SeatType seatType =
+                    row < PREMIUM_ROWS ? SeatType.PREMIUM : SeatType.REGULAR;
+
+            for (int col = 1; col <= TOTAL_COLS; col++) {
+
+                SeatEntity seat = new SeatEntity();
+                seat.setShow(show);
+                seat.setSeatNumber(rowChar + String.valueOf(col));
+                seat.setSeatType(seatType);
+                seat.setStatus(AppEnums.SeatStatus.AVAILABLE);
+
+                seats.add(seat);
+            }
+        }
+
+        seatRepository.saveAll(seats);
+    }
+
 
     @Override
     public void deleteShow(Long showId) {
         showRepository.deleteById(showId);
     }
 }
+
+
+
+
+
+
 
