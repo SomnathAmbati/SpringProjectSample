@@ -1,15 +1,20 @@
 package com.example.SpringProject.theatre;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.example.SpringProject.Exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class TheatreServiceImpl implements TheatreService {
+    
     @Autowired
     private TheatreRepository theatreRepository;
 
@@ -17,13 +22,8 @@ public class TheatreServiceImpl implements TheatreService {
 
     @Override
     public TheatreDTO createTheatre(TheatreDTO dto) {
-        // Map DTO → Entity
         TheatreEntity theatre = modelMapper.map(dto, TheatreEntity.class);
-
-        // Save entity
         TheatreEntity saved = theatreRepository.save(theatre);
-
-        // Map Entity → DTO
         return modelMapper.map(saved, TheatreDTO.class);
     }
 
@@ -32,35 +32,40 @@ public class TheatreServiceImpl implements TheatreService {
         return theatreRepository.findAll()
                 .stream()
                 .map(theatre -> modelMapper.map(theatre, TheatreDTO.class))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
-    public TheatreDTO getTheatreById(Long id) {
+    public TheatreDTO getTheatreById(Long id) throws ResourceNotFoundException {
         TheatreEntity theatre = theatreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Theatre not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Service.THEATRE_NOT_FOUND"));
 
         return modelMapper.map(theatre, TheatreDTO.class);
     }
 
-    //Admin Methods
+    // Admin Methods
     @Override
     public TheatreEntity create(TheatreDTO dto) {
         return theatreRepository.save(modelMapper.map(dto, TheatreEntity.class));
     }
 
     @Override
-    public TheatreEntity update(Long id, TheatreDTO dto) {
-        TheatreEntity t = theatreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Theatre not found"));
-        t.setName(dto.getName());
-        t.setLocation(dto.getLocation());
-        return theatreRepository.save(t);
+    public TheatreEntity update(Long id, TheatreDTO dto) throws ResourceNotFoundException {
+        TheatreEntity theatre = theatreRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Service.THEATRE_NOT_FOUND"));
+        
+        theatre.setName(dto.getName());
+        theatre.setLocation(dto.getLocation());
+        return theatreRepository.save(theatre);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws ResourceNotFoundException {
+        Optional<TheatreEntity> theatreOpt = theatreRepository.findById(id);
+        if (!theatreOpt.isPresent()) {
+            throw new ResourceNotFoundException("Service.THEATRE_NOT_FOUND");
+        }
         theatreRepository.deleteById(id);
     }
-
 }
+

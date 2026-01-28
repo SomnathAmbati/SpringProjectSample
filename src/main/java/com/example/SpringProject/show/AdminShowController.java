@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.SpringProject.Exception.BadRequestException;
+import com.example.SpringProject.Exception.ResourceNotFoundException;
+
 
 @RestController
 @RequestMapping("/api/admin/shows")
@@ -22,7 +25,7 @@ public class AdminShowController {
     @PostMapping
     public Show create(@RequestParam Long movieId,
                        @RequestParam Long theatreId,
-                       @RequestParam String showTime) {
+                       @RequestParam String showTime) throws ResourceNotFoundException, BadRequestException {
         return service.createShowWithId(
                 movieId,
                 theatreId,
@@ -30,7 +33,7 @@ public class AdminShowController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws ResourceNotFoundException {
         service.deleteShow(id);
     }
 }

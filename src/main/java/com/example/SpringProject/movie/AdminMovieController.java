@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.SpringProject.Exception.ResourceNotFoundException;
+
 @RestController
 @RequestMapping("/api/admin/movies")
 @PreAuthorize("hasRole('ADMIN')")
@@ -23,12 +25,12 @@ public class AdminMovieController {
     }
 
     @PutMapping("/{id}")
-    public MovieEntity update(@PathVariable Long id, @RequestBody MovieDTO dto) {
+    public MovieEntity update(@PathVariable Long id, @RequestBody MovieDTO dto) throws ResourceNotFoundException {
         return movieService.updateMovie(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws ResourceNotFoundException {
         movieService.deleteMovie(id);
     }
 }

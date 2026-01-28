@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.SpringProject.Exception.ResourceNotFoundException;
+
 
 @RestController
 @RequestMapping("/api/admin/theatres")
@@ -25,12 +27,12 @@ public class AdminTheatreController {
     }
 
     @PutMapping("/{id}")
-    public TheatreEntity update(@PathVariable Long id, @RequestBody TheatreDTO dto) {
+    public TheatreEntity update(@PathVariable Long id, @RequestBody TheatreDTO dto) throws ResourceNotFoundException {
         return theatreService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws ResourceNotFoundException {
         theatreService.delete(id);
     }
 }

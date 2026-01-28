@@ -10,7 +10,7 @@ public interface AppEnums {
 
     enum BookingStatus { INITIATED, CONFIRMED, CANCELLED }
 
-    enum PaymentMode { CREDIT_CARD, DEBIT_CARD }
+    enum PaymentMode { CREDIT, DEBIT }
 
     enum PaymentStatus { SUCCESS, FAILED }
 
