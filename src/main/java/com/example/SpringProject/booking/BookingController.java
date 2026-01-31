@@ -17,7 +17,6 @@ import jakarta.validation.Valid;
 
 import org.springframework.core.env.Environment;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/bookings")

@@ -11,6 +11,6 @@ public class PaymentDTO {
     @NotNull(message = "{payment.bookingId.invalid}")
     private Long bookingId;
     
-    @NotBlank(message = "{payment.mode.invalid}")
+    // @NotBlank(message = "{payment.mode.invalid}")
     private AppEnums.PaymentMode mode;  
 }
