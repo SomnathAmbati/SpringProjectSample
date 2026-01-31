@@ -1,6 +1,7 @@
 package com.example.SpringProject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,38 @@ public class BookingServiceImplTest {
         @InjectMocks
         private BookingServiceImpl bookingService;
     
+
+         // ==================== BOOKING HISTORY VALID ====================
+        @Test
+        void getBookingsByUserIdValid() throws ResourceNotFoundException {
+
+            Booking booking = new Booking();
+            booking.setId(1L);
+
+            Mockito.when(bookingRepository.findByUserIdOrderByBookingTimeDesc(1L))
+                    .thenReturn(List.of(booking));
+
+            List<Booking> result = bookingService.getBookingsByUserId(1L);
+
+            Assertions.assertEquals(1, result.size());
+            Mockito.verify(bookingRepository, Mockito.times(1))
+                    .findByUserIdOrderByBookingTimeDesc(1L);
+        }
+
+        // ==================== BOOKING HISTORY INVALID ====================
+        @Test
+        void getBookingsByUserIdInvalid() {
+
+            Mockito.when(bookingRepository.findByUserIdOrderByBookingTimeDesc(2L))
+                    .thenReturn(Collections.emptyList());
+
+            Assertions.assertThrows(
+                    ResourceNotFoundException.class,
+                    () -> bookingService.getBookingsByUserId(2L)
+            );
+        }
+
+
         // ==================== CREATE BOOKING TESTS ====================
     
         @Test
@@ -312,6 +345,8 @@ public class BookingServiceImplTest {
             Assertions.assertEquals(500.0, result.getTotalPrice(), 0.01);
         }
     
+        
+
         // ==================== GET BOOKING BY ID TESTS ====================
     
         @Test

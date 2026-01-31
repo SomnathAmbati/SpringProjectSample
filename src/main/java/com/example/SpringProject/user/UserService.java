@@ -22,9 +22,7 @@ public class UserService  {
         user.setRole(RoleType.USER);
 
         User saved = userRepository.save(user);
-        UserDTO result = new UserDTO();
-        result.setEmail(saved.getEmail());
-        result.setPassword(saved.getPassword());
+        UserDTO result = new UserDTO(saved.getEmail(), saved.getPassword());
         return result;
     }
 }

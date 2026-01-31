@@ -91,5 +91,19 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepo.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Service.BOOKING_NOT_FOUND"));
     }
-}
 
+// ==================== BOOKING HISTORY ====================
+    @Override
+    public List<Booking> getBookingsByUserId(Long userId)
+            throws ResourceNotFoundException {
+
+        List<Booking> bookings =
+                bookingRepo.findByUserIdOrderByBookingTimeDesc(userId);
+
+        if (bookings.isEmpty()) {
+            throw new ResourceNotFoundException("No bookings found for user");
+        }
+
+        return bookings;
+    }
+}

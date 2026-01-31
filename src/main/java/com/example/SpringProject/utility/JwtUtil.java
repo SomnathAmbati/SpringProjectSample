@@ -2,6 +2,7 @@ package com.example.SpringProject.utility;
 
 import java.security.Key;
 import java.util.Date;
+import io.jsonwebtoken.JwtException;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -13,7 +14,7 @@ public class JwtUtil {
 
     private static final String SECRET = "my-super-secret-key-my-super-secret-key";
 
-    private static final long EXPIRATION_TIME = 50000 * 60 * 60; // 1 hour
+    private static final long EXPIRATION_TIME = 60 * 60 * 1000;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
