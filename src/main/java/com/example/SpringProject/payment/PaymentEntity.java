@@ -1,7 +1,8 @@
-package com.example.SpringProject.seating;
 
+package com.example.SpringProject.payment;
+
+import com.example.SpringProject.booking.Booking;
 import com.example.SpringProject.common.AppEnums;
-import com.example.SpringProject.show.Show;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,32 +10,32 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+@Table(name = "payments")
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "seats")
-@Entity
-public class SeatEntity {
+public class PaymentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String seatNumber; // A1, A2, B1...
+    @OneToOne(optional = false)
+    private Booking booking;
 
     @Enumerated(EnumType.STRING)
-    private AppEnums.SeatType seatType; // PREMIUM / REGULAR
+    private AppEnums.PaymentMode mode; // CREDIT / DEBIT
+
+    private double finalAmount;
 
     @Enumerated(EnumType.STRING)
-    private AppEnums.SeatStatus status; // AVAILABLE / BOOKED
-
-    @ManyToOne(optional = false)
-    private Show show;
+    private AppEnums.PaymentStatus status;
 }
-

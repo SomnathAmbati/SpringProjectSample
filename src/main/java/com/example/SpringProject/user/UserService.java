@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import com.example.SpringProject.common.AppEnums.RoleType;
 
 import lombok.RequiredArgsConstructor;
-
-
 @Service
 @RequiredArgsConstructor
 public class UserService  {

@@ -43,7 +43,7 @@ public class JwtSecurityConfiguration {
     private String origins;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)  {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception  {
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -87,7 +87,7 @@ public class JwtSecurityConfiguration {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) {
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
