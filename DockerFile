@@ -23,5 +23,6 @@ RUN ./mvnw clean package -DskipTests
 # Expose port (Render uses dynamic PORT)
 EXPOSE 8080
 
+
 # Run app
-CMD ["sh", "-c", "java -jar target/*.jar"]
+CMD ["sh", "-c", "java -jar target/*.jar"] 
