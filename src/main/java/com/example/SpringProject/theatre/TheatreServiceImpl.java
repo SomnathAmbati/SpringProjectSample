@@ -11,6 +11,7 @@ import com.example.SpringProject.Exception.ResourceNotFoundException;
 
 import jakarta.transaction.Transactional;
 
+
 @Service
 @Transactional
 public class TheatreServiceImpl implements TheatreService {
@@ -32,7 +33,7 @@ public class TheatreServiceImpl implements TheatreService {
         return theatreRepository.findAll()
                 .stream()
                 .map(theatre -> modelMapper.map(theatre, TheatreDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -68,4 +69,3 @@ public class TheatreServiceImpl implements TheatreService {
         theatreRepository.deleteById(id);
     }
 }
-

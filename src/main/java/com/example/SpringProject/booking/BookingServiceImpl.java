@@ -20,6 +20,8 @@ import com.example.SpringProject.user.User;
 
 import jakarta.transaction.Transactional;
 
+
+
 @Service
 @Transactional
 public class BookingServiceImpl implements BookingService {
@@ -65,20 +67,21 @@ public class BookingServiceImpl implements BookingService {
         }
 
         // Calculate total price
-        double total = seats.stream()
+        double total1 = seats.stream()
                 .mapToDouble(s ->
-                        s.getSeatType() == SeatType.PREMIUM ? 250 : 180)
+                        s.getSeatType().equals(SeatType.PREMIUM)? 300 : 260)
                 .sum();
-
+        
+        double cf = dto.getSeatIds().size() * 30;
+        double gst = (total1 + cf) * 18 / 100;
+        //total cost
+        double total = total1 + cf + gst; 
         // Create booking
         Booking booking = new Booking();
         booking.setUser(user);
         booking.setShow(show);
-        booking.setSeatNumbers(
-                seats.stream()
-                        .map(SeatEntity::getSeatNumber)
-                        .collect(Collectors.joining(","))
-        );
+        booking.setSeatNumbers(seats.stream().map(SeatEntity::getSeatNumber)
+        		.collect(Collectors.joining(",")));
         booking.setTotalPrice(total);
         booking.setStatus(AppEnums.BookingStatus.INITIATED);
         booking.setBookingTime(LocalDateTime.now());
@@ -94,8 +97,7 @@ public class BookingServiceImpl implements BookingService {
 
 // ==================== BOOKING HISTORY ====================
     @Override
-    public List<Booking> getBookingsByUserId(Long userId)
-            throws ResourceNotFoundException {
+    public List<Booking> getBookingsByUserId(Long userId) throws ResourceNotFoundException {
 
         List<Booking> bookings =
                 bookingRepo.findByUserIdOrderByBookingTimeDesc(userId);
@@ -103,7 +105,11 @@ public class BookingServiceImpl implements BookingService {
         if (bookings.isEmpty()) {
             throw new ResourceNotFoundException("No bookings found for user");
         }
-
-        return bookings;
+        
+       
+        return bookings
+        		.stream()
+        		.filter(i -> i.getStatus().equals(AppEnums.BookingStatus.CONFIRMED)).toList();
     }
 }
+

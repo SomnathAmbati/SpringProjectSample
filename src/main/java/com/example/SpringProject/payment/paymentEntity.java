@@ -14,8 +14,8 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 
-@Entity
 @Table(name = "payments")
+@Entity
 @Data
 public class PaymentEntity {
 
@@ -27,10 +27,12 @@ public class PaymentEntity {
     private Booking booking;
 
     @Enumerated(EnumType.STRING)
-    private AppEnums.PaymentMode mode;
+    private AppEnums.PaymentMode mode; // CREDIT / DEBIT
 
     private double finalAmount;
 
     @Enumerated(EnumType.STRING)
     private AppEnums.PaymentStatus status;
 }
+
+

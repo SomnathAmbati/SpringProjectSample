@@ -15,6 +15,7 @@ import com.example.SpringProject.show.ShowRepository;
 
 import jakarta.transaction.Transactional;
 
+
 @Service
 @Transactional
 public class SeatServiceImpl implements SeatService {
@@ -38,7 +39,7 @@ public class SeatServiceImpl implements SeatService {
         return seatRepo.findByShowId(showId)
                 .stream()
                 .map(seat -> modelMapper.map(seat, SeatDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -68,6 +69,6 @@ public class SeatServiceImpl implements SeatService {
 
         return seats.stream()
                 .map(seat -> modelMapper.map(seat, SeatDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

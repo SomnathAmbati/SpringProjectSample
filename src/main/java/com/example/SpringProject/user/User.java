@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+
 @Entity
 @Data
 @Table(name = "users")
@@ -25,9 +26,14 @@ public class User {
 
     @Column(unique = true, nullable = false)
     private String email;
+    
+    
 
     private String password;
 
     @Enumerated(EnumType.STRING)
     private AppEnums.RoleType role; // ADMIN, USER
 }
+
+
+

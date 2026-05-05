@@ -21,6 +21,7 @@ import com.example.SpringProject.seating.SeatRepository;
 
 import jakarta.transaction.Transactional;
 
+
 @Service
 @Transactional
 public class PaymentServiceImpl implements PaymentService {
@@ -72,7 +73,12 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentEntity payment = new PaymentEntity();
         payment.setBooking(booking);
         payment.setMode(dto.getMode());
-        payment.setFinalAmount(booking.getTotalPrice());
+        
+        
+        if(dto.getMode().equals(AppEnums.PaymentMode.CREDIT)) {
+        		payment.setFinalAmount(booking.getTotalPrice() * 0.9);
+        }else payment.setFinalAmount(booking.getTotalPrice() * 0.95);
+        
         payment.setStatus(PaymentStatus.SUCCESS);
 
         PaymentEntity savedPayment;
@@ -87,6 +93,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 6️⃣ Confirm booking
         booking.setStatus(BookingStatus.CONFIRMED);
+        booking.setTotalPrice(payment.getFinalAmount());
         bookingRepository.save(booking);
 
         // 7️⃣ Response

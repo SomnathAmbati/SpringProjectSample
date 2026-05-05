@@ -16,3 +16,4 @@ public class TheatreDTO {
     @Size(min = 1, max = 200, message = "{theatre.location.invalid}")
     private String location;
 }
+

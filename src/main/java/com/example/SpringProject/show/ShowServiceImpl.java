@@ -25,6 +25,7 @@ import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 @Transactional
 public class ShowServiceImpl implements ShowService {
@@ -60,7 +61,7 @@ public class ShowServiceImpl implements ShowService {
                     dto.setTheatre(modelMapper.map(show.getTheatre(), TheatreDTO.class));
                     dto.setShowTime(show.getShowTime());
                     return dto;
-                }).collect(Collectors.toList());
+                }).toList();
     }
 
     @Override
@@ -106,15 +107,15 @@ public class ShowServiceImpl implements ShowService {
     private void generateSeatsForShow(Show show) {
         List<SeatEntity> seats = new ArrayList<>();
 
-        final int TOTAL_ROWS = 10;     // A–J
-        final int TOTAL_COLS = 12;     // 1–12
-        final int PREMIUM_ROWS = 2;    // A, B
+        final int toalRows = 10;     // A–J
+        final int totalCols = 12;     // 1–12
+        final int primumRows = 2;    // A, B
 
-        for (int row = 0; row < TOTAL_ROWS; row++) {
+        for (int row = 0; row < toalRows; row++) {
             char rowChar = (char) ('A' + row);
-            SeatType seatType = row < PREMIUM_ROWS ? SeatType.PREMIUM : SeatType.REGULAR;
+            SeatType seatType = row < primumRows ? SeatType.PREMIUM : SeatType.REGULAR;
 
-            for (int col = 1; col <= TOTAL_COLS; col++) {
+            for (int col = 1; col <= totalCols; col++) {
                 SeatEntity seat = new SeatEntity();
                 seat.setShow(show);
                 seat.setSeatNumber(rowChar + String.valueOf(col));
@@ -137,10 +138,3 @@ public class ShowServiceImpl implements ShowService {
         showRepository.deleteById(showId);
     }
 }
-
-
-
-
-
-
-

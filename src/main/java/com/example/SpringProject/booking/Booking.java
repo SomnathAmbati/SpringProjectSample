@@ -1,10 +1,7 @@
 package com.example.SpringProject.booking;
 
-import java.time.LocalDateTime;
 
-import com.example.SpringProject.common.AppEnums;
-import com.example.SpringProject.show.Show;
-import com.example.SpringProject.user.User;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,17 +23,17 @@ public class Booking {
     private Long id;
 
     @ManyToOne(optional = false)
-    private User user;
+    private com.example.SpringProject.user.User user = null;
 
     @ManyToOne(optional = false)
-    private Show show;
+    private com.example.SpringProject.show.Show show;
 
     private String seatNumbers; // "A1,A2,B3"
 
     private double totalPrice;
 
     @Enumerated(EnumType.STRING)
-    private AppEnums.BookingStatus status;
+    private com.example.SpringProject.common.AppEnums.BookingStatus status;
 
     private LocalDateTime bookingTime;
 }

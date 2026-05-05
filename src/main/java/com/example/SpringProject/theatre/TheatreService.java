@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.SpringProject.Exception.ResourceNotFoundException;
 
+
+
 public interface TheatreService {
 
     TheatreDTO createTheatre(TheatreDTO theatreDTO);

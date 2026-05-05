@@ -33,14 +33,14 @@ public class TheatreController {
     private Environment environment;
 
     @PostMapping
-    public ResponseEntity<String> createTheatre(@Valid @RequestBody TheatreDTO dto) throws ICinemaException {
+    public ResponseEntity<String> createTheatre(@Valid @RequestBody TheatreDTO dto) {
         theatreService.createTheatre(dto);
         String message = environment.getProperty("API.THEATRE_CREATED");
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
     @GetMapping
-    public ResponseEntity<List<TheatreDTO>> getAllTheatres() throws ICinemaException {
+    public ResponseEntity<List<TheatreDTO>> getAllTheatres()  {
         List<TheatreDTO> theatres = theatreService.getAllTheatres();
         return ResponseEntity.ok(theatres);
     }
@@ -68,3 +68,15 @@ public class TheatreController {
         return ResponseEntity.ok(message);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

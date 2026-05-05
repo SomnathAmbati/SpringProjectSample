@@ -20,6 +20,7 @@ import com.example.SpringProject.Exception.ICinemaException;
 import org.springframework.core.env.Environment;
 import org.springframework.validation.annotation.Validated;
 
+
 @RestController
 @RequestMapping("/api/shows")
 @Validated
@@ -62,3 +63,5 @@ public class ShowController {
         return ResponseEntity.ok(message);
     }
 }
+
+

@@ -24,61 +24,55 @@ import jakarta.validation.Valid;
 import org.springframework.core.env.Environment;
 import org.springframework.validation.annotation.Validated;
 
+
 @RestController
 @RequestMapping("/api/bookings")
 @Validated
 public class BookingController {
 
-    @Autowired
-    private BookingService bookingService;
+	@Autowired
+	private BookingService bookingService;
 
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private Environment environment;
+	@Autowired
+	private UserRepository userRepository;
 
-    /**
-     * Create booking (INITIATED)
-     * Seats are NOT booked here
-     */
-    @PostMapping
-    public ResponseEntity<Booking> createBooking(@Valid @RequestBody BookingDTO bookingDTO) 
-            throws ICinemaException {
 
-        // 🔴 TEMP: user mocked (until auth is added)
-        User dummyUser = new User();
-        dummyUser.setId(1L); // replace with logged-in user later
+	/**
+	 * Create booking (INITIATED) Seats are NOT booked here
+	 */
+	@PostMapping
+	public ResponseEntity<Booking> createBooking(@AuthenticationPrincipal UserDetails userDetails,
+			@Valid @RequestBody BookingDTO bookingDTO) throws ICinemaException {
 
-        Booking booking = bookingService.createBooking(dummyUser, bookingDTO);
+		// 🔐 Get logged-in user from DB
+		User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(()->new ICinemaException("User Not Found"));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(booking);
-    }
+		Booking booking = bookingService.createBooking(user, bookingDTO);
 
-    /**
-     * Get booking details
-     */
-    @GetMapping("/{bookingId}")
-    public ResponseEntity<Booking> getBooking(@PathVariable Long bookingId) throws com.example.SpringProject.Exception.ICinemaException {
-        Booking booking = bookingService.getBookingById(bookingId);
-        return ResponseEntity.ok(booking);
-    }
-    // BOOKING HISTORY (TEMP USER ID)
-    @GetMapping("/user/{userId}")
-    public List<Booking> getUserBookings(@PathVariable Long userId)
-            throws ResourceNotFoundException {
+		return ResponseEntity.status(HttpStatus.CREATED).body(booking);
+	}
 
-        return bookingService.getBookingsByUserId(userId);
-    }
+	/**
+	 * Get booking details
+	 */
+	@GetMapping("/{bookingId}")
+	public ResponseEntity<Booking> getBooking(@PathVariable Long bookingId) throws ICinemaException {
+		Booking booking = bookingService.getBookingById(bookingId);
+		return ResponseEntity.ok(booking);
+	}
 
-    @GetMapping("/my")
-public List<Booking> myBookings(
-        @AuthenticationPrincipal UserDetails userDetails
-) throws ResourceNotFoundException {
-    User user = userRepository.findByEmail(userDetails.getUsername())
-        .orElseThrow();
+	// BOOKING HISTORY (TEMP USER ID)
+	@GetMapping("/user/{userId}")
+	public List<Booking> getUserBookings(@PathVariable Long userId) throws ResourceNotFoundException {
 
-    return bookingService.getBookingsByUserId(user.getId());
-}
+		return bookingService.getBookingsByUserId(userId);
+	}
+
+	@GetMapping("/my")
+	public List<Booking> myBookings(@AuthenticationPrincipal UserDetails userDetails) throws ResourceNotFoundException {
+		User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+
+		return bookingService.getBookingsByUserId(user.getId());
+	}
 
 }

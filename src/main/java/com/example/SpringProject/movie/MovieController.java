@@ -30,7 +30,7 @@ public class MovieController {
     private Environment environment;
 
     @GetMapping
-    public ResponseEntity<List<MovieDTO>> getAllMovies() throws ICinemaException {
+    public ResponseEntity<List<MovieDTO>> getAllMovies()  {
         List<MovieDTO> movies = movieService.getAllMovies();
         return ResponseEntity.ok(movies);
     }
@@ -54,3 +54,6 @@ public class MovieController {
         return ResponseEntity.ok(message);
     }
 }
+
+
+

@@ -23,7 +23,12 @@ import lombok.RequiredArgsConstructor;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.Customizer;
+import org.springframework.beans.factory.annotation.Value;
+
 
    
 @Configuration
@@ -34,8 +39,11 @@ public class JwtSecurityConfiguration {
     private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService userDetailsService;
 
+    @Value("${app.cors.allowed-origins}")
+    private String origins;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http)  {
 
         http
                 .csrf(csrf -> csrf.disable())
@@ -49,14 +57,16 @@ public class JwtSecurityConfiguration {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/movies/**",
-                                
+                                "/api/shows/**",
+                                "/api/seats/**", 
+                                "/api/payments/**",                             
                                 "/api/show/**",
-                                "/api/**", 
                                 "/api/users/register",
-	                        		"/static/**", 
-	                        		"/images/**",
-	                        		"/js/**")
-                        .permitAll()
+                                "/api/bookings/**",
+                        		"/static/**", 
+                        		"/images/**",
+                        		"/js/**")
+         .permitAll()
 
                         //  Booking APIs  USER or ADMIN
                         .requestMatchers("/api/bookings/**","/api/theatres/**")
@@ -77,7 +87,7 @@ public class JwtSecurityConfiguration {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+            AuthenticationConfiguration config) {
         return config.getAuthenticationManager();
     }
 
@@ -90,7 +100,7 @@ public class JwtSecurityConfiguration {
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
 
-        config.setAllowedOrigins(java.util.List.of("http://localhost:3000"));
+        config.setAllowedOrigins(Arrays.asList(origins.split(",")));
         config.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(java.util.List.of("*"));
         config.setAllowCredentials(true);
@@ -101,4 +111,3 @@ public class JwtSecurityConfiguration {
         return source;
     }
 }
-

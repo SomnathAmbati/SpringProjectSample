@@ -11,7 +11,6 @@ import com.example.SpringProject.Exception.ICinemaException;
 import org.springframework.validation.annotation.Validated;
 import jakarta.validation.Valid;
 
-
 @RestController
 @RequestMapping("/api/payments")
 @Validated
@@ -34,3 +33,4 @@ public class PaymentController {
         return ResponseEntity.ok(response);
     }
 }
+

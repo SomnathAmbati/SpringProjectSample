@@ -11,13 +11,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Table(name = "shows")
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Show {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,5 +32,5 @@ public class Show {
     private TheatreEntity theatre;
 
     private LocalDateTime showTime;
-    // private int availableSeats;
 }
+

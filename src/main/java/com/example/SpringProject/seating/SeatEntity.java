@@ -33,3 +33,4 @@ public class SeatEntity {
     @ManyToOne(optional = false)
     private Show show;
 }
+

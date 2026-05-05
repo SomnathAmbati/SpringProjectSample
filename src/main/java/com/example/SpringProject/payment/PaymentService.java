@@ -6,7 +6,6 @@ import com.example.SpringProject.Exception.PaymentException;
 import com.example.SpringProject.Exception.ResourceNotFoundException;
 
 public interface PaymentService {
-
     PaymentResponseDTO processPayment(PaymentDTO paymentDTO) throws ResourceNotFoundException, BusinessException, ConflictException, PaymentException;
 }
 

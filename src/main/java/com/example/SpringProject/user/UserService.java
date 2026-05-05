@@ -7,6 +7,7 @@ import com.example.SpringProject.common.AppEnums.RoleType;
 
 import lombok.RequiredArgsConstructor;
 
+
 @Service
 @RequiredArgsConstructor
 public class UserService  {
@@ -15,14 +16,22 @@ public class UserService  {
     private final PasswordEncoder passwordEncoder;
 
     public UserDTO register(UserDTO dto) {
-
         User user = new User();
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setRole(RoleType.USER);
-
+        user.setName(dto.getName());
         User saved = userRepository.save(user);
-        UserDTO result = new UserDTO(saved.getEmail(), saved.getPassword());
-        return result;
+        return new UserDTO(saved.getName(),saved.getEmail(),saved.getPassword());
     }
+    
+    
 }
+
+
+
+
+
+
+
+

@@ -22,19 +22,21 @@ public class MovieServiceImpl implements MovieService {
     private MovieRepository movieRepository;
 
     private ModelMapper modelMapper = new ModelMapper();
+    
+    private String movieNotFound="Service.MOVIE_NOT_FOUND";
 
     @Override
     public List<MovieDTO> getAllMovies() {
         return movieRepository.findAll()
                 .stream()
                 .map(movie -> modelMapper.map(movie, MovieDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public MovieDTO getMovie(Long id) throws ResourceNotFoundException {
         MovieEntity movie = movieRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Service.MOVIE_NOT_FOUND"));
+                .orElseThrow(() -> new ResourceNotFoundException(movieNotFound));
 
         return modelMapper.map(movie, MovieDTO.class);
     }
@@ -46,7 +48,7 @@ public class MovieServiceImpl implements MovieService {
         }
 
         MovieEntity movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new ResourceNotFoundException("Service.MOVIE_NOT_FOUND"));
+                .orElseThrow(() -> new ResourceNotFoundException(movieNotFound));
 
         movie.addRating(rating);
         movieRepository.save(movie);
@@ -61,7 +63,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public MovieEntity updateMovie(Long id, MovieDTO dto) throws ResourceNotFoundException {
         MovieEntity movie = movieRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Service.MOVIE_NOT_FOUND"));
+                .orElseThrow(() -> new ResourceNotFoundException(movieNotFound));
         
         // Update fields
         movie.setName(dto.getName());
@@ -79,8 +81,10 @@ public class MovieServiceImpl implements MovieService {
     public void deleteMovie(Long id) throws ResourceNotFoundException {
         Optional<MovieEntity> movieOpt = movieRepository.findById(id);
         if (!movieOpt.isPresent()) {
-            throw new ResourceNotFoundException("Service.MOVIE_NOT_FOUND");
+            throw new ResourceNotFoundException(movieNotFound);
         }
         movieRepository.deleteById(id);
     }
 }
+
+

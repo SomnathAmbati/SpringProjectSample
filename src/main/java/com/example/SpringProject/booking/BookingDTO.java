@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+
 @Data
 public class BookingDTO {
     @NotNull(message = "{booking.showId.invalid}")
@@ -14,3 +15,4 @@ public class BookingDTO {
     @NotEmpty(message = "{booking.seatIds.invalid}")
     private List<Long> seatIds;
 }
+

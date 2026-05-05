@@ -13,7 +13,8 @@ public interface BookingService {
 
     Booking getBookingById(Long bookingId) throws ResourceNotFoundException;
 
-    List<Booking> getBookingsByUserId(Long userId) throws ResourceNotFoundException;
+	List<Booking> getBookingsByUserId(Long userId) throws ResourceNotFoundException;
 
     
 }
+

@@ -34,3 +34,5 @@ public class AdminMovieController {
         movieService.deleteMovie(id);
     }
 }
+
+

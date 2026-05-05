@@ -1,7 +1,10 @@
 package com.example.SpringProject.movie;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
 import com.example.SpringProject.common.AppEnums;
@@ -9,8 +12,9 @@ import com.example.SpringProject.common.AppEnums;
 @Table(name = "movies")
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class MovieEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +26,7 @@ public class MovieEntity {
 
     private String genre;     // comma-separated genres
     private String language;  // comma-separated languages
-
+    @Column(length = 10000)
     private String imageUrl;         // standard image
     private LocalDate releaseDate;
 
@@ -36,6 +40,7 @@ public class MovieEntity {
     public void addRating(int rating) {
         this.ratingSum += rating;
         this.ratingCount++;
-        this.averageRating = (double) ratingSum / ratingCount;
+        this.averageRating = Math.round(ratingSum * 100.0 / ratingCount) / 100.0;
     }
 }
+

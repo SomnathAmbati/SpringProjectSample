@@ -12,3 +12,5 @@ public class SeatDTO {
     private AppEnums.SeatStatus status;
     private Long showId;
 }
+
+

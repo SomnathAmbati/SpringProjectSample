@@ -3,6 +3,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
     
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -13,7 +14,6 @@ public class UserController {
     // REGISTER
     @PostMapping("/register")
     public UserDTO register(@RequestBody UserDTO dto) {
-    	
         return userService.register(dto);
     }
 
@@ -23,6 +23,9 @@ public class UserController {
         return "Login successful for " + authentication.getName();
     }
 }
+
+
+
 
 
 

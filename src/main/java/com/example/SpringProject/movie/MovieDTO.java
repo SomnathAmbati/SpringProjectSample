@@ -38,3 +38,5 @@ public class MovieDTO {
     
     private Double averageRating;
 }
+
+
